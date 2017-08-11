@@ -1,11 +1,16 @@
 package com.antonleagre.temporary;
 
+import com.antonleagre.temporary.states.GSM;
+import com.antonleagre.temporary.states.MenuState;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.logging.Logger;
 
 public class Main extends Game {
 
@@ -13,24 +18,44 @@ public class Main extends Game {
 	public static final int V_WIDTH = 640;
 	public static final int V_HEIGHT = 480;
 	public static final String TITLE = "Temporary";
-	public static final float FPS =  1 / 60f;
+	public static final float FPS =  1f / 60f;
 
-	private GameScreenManager gsm;
-	SpriteBatch batch;
-	Texture img;
-	
+	private SpriteBatch sb;
+	private GSM gsm;
+
+	//used for fixed step gameloop
+	private double accumulator = 0;
+
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		sb = new SpriteBatch();
+		gsm = new GSM(this);
+		gsm.pushState(new MenuState(gsm));
+
 	}
+
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+		//rendering using fixed timesteps (for box2d),
+		//actual rendering happens by the gsm
+		accumulator += Gdx.graphics.getDeltaTime();
+		while(accumulator >= FPS){
+			accumulator -= FPS;
+			gsm.update(Gdx.graphics.getDeltaTime());
+			gsm.render(sb);
+		}
+
+
+
+	}
+
+	@Override
+	public void dispose() {
+		gsm.dispose();
+	}
+
+	public SpriteBatch getSpriteBatch() {
+		return sb;
 	}
 }
