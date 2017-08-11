@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.Stack;
 
 public class GSM {
+
     private Stack<State> states;
     private Main game;
 

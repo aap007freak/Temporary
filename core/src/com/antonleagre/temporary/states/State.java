@@ -1,6 +1,7 @@
 package com.antonleagre.temporary.states;
 
 import com.antonleagre.temporary.Main;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -14,10 +15,12 @@ public abstract class State {
     protected GSM gsm;
     protected Main game;
     protected OrthographicCamera cam;
+    protected AssetManager asm;
 
-    protected State(GSM gsm){
+    protected State(GSM gsm, AssetManager asm){
         this.gsm = gsm;
         this.game = gsm.getGame();
+        this.asm = asm;
         cam = new OrthographicCamera();
         cam.setToOrtho(false, V_WIDTH, V_HEIGHT);
         cam.update();
